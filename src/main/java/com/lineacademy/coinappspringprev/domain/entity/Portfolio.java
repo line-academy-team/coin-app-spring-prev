@@ -2,6 +2,8 @@ package com.lineacademy.coinappspringprev.domain.entity;
 
 import com.lineacademy.coinappspringprev.domain.common.BaseTimeEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -45,5 +47,10 @@ public class Portfolio extends BaseTimeEntity {
     public void addPortfolioItem(PortfolioItem item) {
         this.portfolioItems.add(item);
         item.assignPortfolio(this);
+    }
+
+    public void updatePortfolioData(String title, BigDecimal totalSeedMoney) {
+        this.title = title;
+        this.totalSeedMoney = totalSeedMoney;
     }
 }

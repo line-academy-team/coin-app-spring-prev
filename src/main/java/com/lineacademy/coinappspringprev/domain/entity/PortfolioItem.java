@@ -45,15 +45,13 @@ public class PortfolioItem {
         this.quantity = quantity;
     }
 
-    public void updateTargetRatio(BigDecimal targetRatio) {
-        this.targetRatio = targetRatio;
-    }
-
-    public void updateQuantity(BigDecimal quantity) {
-        this.quantity = quantity;
-    }
-
     public void assignPortfolio(Portfolio portfolio) {
         this.portfolio = portfolio;
+    }
+
+    public void updateItemData(BigDecimal targetRatio, BigDecimal buyPrice, BigDecimal quantity) {
+        this.targetRatio = targetRatio;
+        this.buyPrice = buyPrice;
+        this.quantity = quantity;
     }
 }

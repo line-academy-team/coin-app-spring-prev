@@ -2,6 +2,7 @@ package com.lineacademy.coinappspringprev.controller;
 
 import com.lineacademy.coinappspringprev.domain.entity.Portfolio;
 import com.lineacademy.coinappspringprev.dto.portfolio.request.CreatePortfolioRequest;
+import com.lineacademy.coinappspringprev.dto.portfolio.request.UpdatePortfolioRequest;
 import com.lineacademy.coinappspringprev.dto.portfolio.response.PortfolioResponse;
 import com.lineacademy.coinappspringprev.service.PortfolioService;
 import jakarta.validation.Valid;
@@ -60,6 +61,56 @@ public class PortfolioController {
             }
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                     "message", "포트폴리오 생성 중 서버 에러가 발생했습니다."
+            ));
+        }
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> updatePortfolio(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long id,
+            @Valid @RequestBody UpdatePortfolioRequest request
+    ) {
+        try {
+            Portfolio portfolio = portfolioService.updatePortfolio(userId, id, request);
+
+            return ResponseEntity.ok(Map.of(
+                    "message", "포트폴리오가 성공적으로 수정되었습니다.",
+                    "data", PortfolioResponse.from(portfolio)
+            ));
+        } catch (RuntimeException e) {
+            if (e.getMessage().equals("PORTFOLIO_NOT_FOUND_OR_UNAUTHORIZED")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                        "message", "접근 권한이 없거나 존재하지 않는 포트폴리오입니다."
+                ));
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "message", "포트폴리오 수정 중 서버 에러가 발생했습니다."
+            ));
+        }
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> deletePortfolio(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable Long id
+    ) {
+        try {
+            portfolioService.deletePortfolio(userId, id);
+
+            return ResponseEntity.ok(Map.of(
+                    "message", "포트폴리오가 성공적으로 삭제되었습니다."
+            ));
+        } catch (RuntimeException e) {
+            if (e.getMessage().equals("PORTFOLIO_NOT_FOUND_OR_UNAUTHORIZED")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                        "message", "접근 권한이 없거나 존재하지 않는 포트폴리오입니다."
+                ));
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "message", "포트폴리오 삭제 중 서버 에러가 발생했습니다."
             ));
         }
     }
