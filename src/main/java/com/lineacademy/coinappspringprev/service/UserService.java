@@ -50,6 +50,18 @@ public class UserService {
         return user;
     }
 
+    @Transactional(readOnly = true)
+    public User getMe(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
+
+        if (user.getDeletedAt() != null) {
+            throw new RuntimeException("USER_NOT_FOUND");
+        }
+
+        return user;
+    }
+
     @Transactional
     public User updateUser(Long currentUserId, UpdateUserRequest request) {
         User user = userRepository.findById(currentUserId)
